@@ -24,6 +24,7 @@ const luckywheel =
           let spins = 320, maxSpeed = 2.25;
           const speed = maxSpeed / (spins * 2 + (pos + this.model.getRotation(1).y / 18) * 16 + 1);
           mp.game.audio.playSoundFromCoord(1, 'Spin_Start', this.pos.x, this.pos.y, this.pos.z, 'dlc_vw_casino_lucky_wheel_sounds', true, 0, false);
+          // #region 1.1 
           while (true)
           {
             if (spins <= 0) 
@@ -59,6 +60,41 @@ const luckywheel =
             }
             await mp.game.waitAsync(5);
           }
+          // #endregion
+          /* Another variation, can be used in 0.3.7
+          let interval = setInterval(() => 
+          {
+            if (spins <= 0) 
+            {
+              maxSpeed -= speed;  
+              this.model.setRotation(0, this.model.getRotation(1).y - maxSpeed, 0, 2, true);
+              if (maxSpeed <= 0) 
+              { 
+                clearInterval(interval);
+                this.model.setRotation(0, Math.round(this.model.getRotation(1).y), 0, 2, true);
+                mp.game.audio.playSoundFromCoord(1, 'Win', this.pos.x, this.pos.y, this.pos.z, "dlc_vw_casino_lucky_wheel_sounds", true, 0, false);
+                this.isSpinning = false;
+                if (isOwner) 
+                {
+                  mp.events.callRemote('luckywheel.finishspin');
+                  mp.players.local.taskPlayAnim(this.getDictionary(), this.animations[3], 4, -1000, -1, 1048576, 0, false, true, false);
+                  interval = setInterval(() => {
+                    if (mp.players.local.isPlayingAnim(this.getDictionary(), this.animations[3], 3) && mp.players.local.getAnimCurrentTime(this.getDictionary(), this.animations[3]) > 0.75)
+                    {
+                      mp.players.local.clearTasks();
+                      clearInterval(interval);
+                    }
+                  }, 0);
+                }
+              }
+            } 
+            else 
+            {
+              spins--;
+              this.model.setRotation(0, this.model.getRotation(1).y - maxSpeed, 0, 2, true);
+            }
+          }, 0);
+          */
         }
     },
     interaction: 
@@ -91,6 +127,7 @@ const luckywheel =
     async comeToLuckyWheel(pos) 
     {
         const dict = this.object.getDictionary();
+        // #region 1.1 
         mp.game.streaming.requestAnimDict(dict);
         while (!mp.game.streaming.hasAnimDictLoaded(dict)) 
         {
@@ -129,6 +166,7 @@ const luckywheel =
                 await mp.game.waitAsync(0);
             }
         }
+        // #endregion
         /* Another variation, can be used in 0.3.7
         let streaming = setInterval(() => 
         {
