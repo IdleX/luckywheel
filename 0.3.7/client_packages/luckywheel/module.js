@@ -17,14 +17,14 @@ const luckywheel =
         {
           return mp.players.local.getModel() == 1885233650 ? 'ANIM_CASINO_A@AMB@CASINO@GAMES@LUCKY7WHEEL@MALE' : 'ANIM_CASINO_A@AMB@CASINO@GAMES@LUCKY7WHEEL@FEMALE';
         },
-        async spin(pos, isOwner) 
+        spin(pos, isOwner) 
         {
           if (this.isSpinning) return;
           this.isSpinning = true;
           let spins = 320, maxSpeed = 2.25;
           const speed = maxSpeed / (spins * 2 + (pos + this.model.getRotation(1).y / 18) * 16 + 1);
           mp.game.audio.playSoundFromCoord(1, 'Spin_Start', this.pos.x, this.pos.y, this.pos.z, 'dlc_vw_casino_lucky_wheel_sounds', true, 0, false);
-          // #region 1.1 
+          // #region 0.3.7
           let interval = setInterval(() => 
           {
             if (spins <= 0) 
@@ -87,9 +87,10 @@ const luckywheel =
       // Here u can add time limiter
       mp.events.callRemote('luckywheel.cometoluckywheel');
     },
-    async comeToLuckyWheel(pos) 
+    comeToLuckyWheel(pos) 
     {
         const dict = this.object.getDictionary();
+        mp.game.streaming.requestAnimDict(dict);
         // #region 0.3.7
         let streaming = setInterval(() => 
         {
